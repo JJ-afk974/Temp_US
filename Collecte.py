@@ -9,7 +9,7 @@ from zoneinfo import ZoneInfo
 # ============================================================
 
 stations = [
-    ("New York", 40.761, -73.864, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, ),
+    ("New York", 40.7761, -73.8727, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, ),
     ("Miami", 25.7954, -80.2901, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, ),
     ("Austin", 30.162, -97.689, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, ),
     ("Dallas", 32.846, -96.87, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, ),
