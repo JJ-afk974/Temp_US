@@ -309,11 +309,11 @@ def process_openmeteo_model(
     )
 
   data = fetch_openmeteo(
-    lat,
-    lon,
-    model_id,
-    station_timezone,
-    )
+      lat,
+      lon,
+      model_id,
+      station_timezone,
+  )
 
     if data is None:
 
