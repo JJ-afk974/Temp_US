@@ -1,4 +1,5 @@
 import requests
+import os
 import csv
 from datetime import datetime
 from zoneinfo import ZoneInfo
@@ -907,7 +908,7 @@ for (
 
 
 # ============================================================
-# EXPORT
+# EXPORT — AJOUT AU CSV SANS ECRASER LES DONNEES PRECEDENTES
 # ============================================================
 
 FIELDNAMES = [
@@ -920,9 +921,27 @@ FIELDNAMES = [
 ]
 
 
+# ------------------------------------------------------------
+# Vérifie si le fichier existe déjà et s'il contient des données
+# ------------------------------------------------------------
+
+try:
+    file_exists = (
+        os.path.exists(CSV_FILE)
+        and os.path.getsize(CSV_FILE) > 0
+    )
+
+except Exception:
+    file_exists = False
+
+
+# ------------------------------------------------------------
+# Ouverture en mode "a" = append
+# ------------------------------------------------------------
+
 with open(
     CSV_FILE,
-    "w",
+    "a",
     newline="",
     encoding="utf-8",
 ) as file:
@@ -932,8 +951,12 @@ with open(
         fieldnames=FIELDNAMES,
     )
 
-    writer.writeheader()
+    # Écrit l'en-tête uniquement si le fichier est nouveau
+    if not file_exists:
 
+        writer.writeheader()
+
+    # Ajoute les nouvelles données à la suite
     writer.writerows(
         all_results
     )
