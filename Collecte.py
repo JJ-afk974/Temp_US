@@ -31,42 +31,51 @@ from zoneinfo import ZoneInfo
 # ============================================================
 
 stations = [
-    ("New York", 40.77917, -73.88000, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, "America/New_York"),
-    ("Miami", 25.79056, -80.31639, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, "America/New_York"),
-    ("Austin", 30.18304, -97.67987, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, "America/Chicago"),
-    ("Dallas", 32.85416, -96.85506, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, "America/Chicago"),
-    ("Denver", 39.71331, -104.75806, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, "America/Denver"),
-    ("Los Angeles", 33.93806, -118.38889, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, "America/Los_Angeles"),
-    ("Chicago", 41.97972, -87.90444, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, "America/Chicago"),
-    ("Houston", 29.63750, -95.28250, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, "America/Chicago"),
-    ("Seattle", 47.44472, -122.31361, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, "America/Los_Angeles"),
-    ("Atlanta", 33.64028, -84.42694, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, "America/New_York"),
-    ("San Francisco", 37.61961, -122.36558, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, "America/Los_Angeles"),
+    ("New York", 40.77917, -73.88000, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, "America/New_York", "us"),
+    ("Miami", 25.79056, -80.31639, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, "America/New_York", "us"),
+    ("Austin", 30.18304, -97.67987, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, "America/Chicago", "us"),
+    ("Dallas", 32.85416, -96.85506, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, "America/Chicago", "us"),
+    ("Denver", 39.71331, -104.75806, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, "America/Denver", "us"),
+    ("Los Angeles", 33.93806, -118.38889, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, "America/Los_Angeles", "us"),
+    ("Chicago", 41.97972, -87.90444, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, "America/Chicago", "us"),
+    ("Houston", 29.63750, -95.28250, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, "America/Chicago", "us"),
+    ("Seattle", 47.44472, -122.31361, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, "America/Los_Angeles", "us"),
+    ("Atlanta", 33.64028, -84.42694, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, "America/New_York", "us"),
+    ("San Francisco", 37.61961, -122.36558, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, "America/Los_Angeles", "us"),
 
-    ("Paris", 48.986, 2.449, "e1f10a1e78da46f5b10a1e78da96f525", "m", False, "Europe/Paris"),
-    ("Londres", 51.51, 0.028, "e1f10a1e78da46f5b10a1e78da96f525", "m", False, "Europe/London"),
-    ("Madrid", 40.452, -3.584, "e1f10a1e78da46f5b10a1e78da96f525", "m", False, "Europe/Madrid"),
-    ("Milan", 45.626, 8.696, "e1f10a1e78da46f5b10a1e78da96f525", "m", False, "Europe/Rome"),
-    ("Munich", 48.354, 11.792, "e1f10a1e78da46f5b10a1e78da96f525", "m", False, "Europe/Berlin"),
-    ("Amsterdam", 52.31, 4.765, "e1f10a1e78da46f5b10a1e78da96f525", "m", False, "Europe/Amsterdam"),
-    ("Varsovie", 52.169, 20.979, "e1f10a1e78da46f5b10a1e78da96f525", "m", False, "Europe/Warsaw"),
-    ("Helsinski", 60.317, 24.967, "e1f10a1e78da46f5b10a1e78da96f525", "m", False, "Europe/Helsinki"),
+    ("Paris", 48.986, 2.449, "e1f10a1e78da46f5b10a1e78da96f525", "m", False, "Europe/Paris", "global"),
+    ("Londres", 51.51, 0.028, "e1f10a1e78da46f5b10a1e78da96f525", "m", False, "Europe/London", "global"),
+    ("Madrid", 40.452, -3.584, "e1f10a1e78da46f5b10a1e78da96f525", "m", False, "Europe/Madrid", "global"),
+    ("Milan", 45.626, 8.696, "e1f10a1e78da46f5b10a1e78da96f525", "m", False, "Europe/Rome", "global"),
+    ("Munich", 48.354, 11.792, "e1f10a1e78da46f5b10a1e78da96f525", "m", False, "Europe/Berlin", "global"),
+    ("Amsterdam", 52.31, 4.765, "e1f10a1e78da46f5b10a1e78da96f525", "m", False, "Europe/Amsterdam", "global"),
+    ("Varsovie", 52.169, 20.979, "e1f10a1e78da46f5b10a1e78da96f525", "m", False, "Europe/Warsaw", "global"),
+    ("Helsinski", 60.317, 24.967, "e1f10a1e78da46f5b10a1e78da96f525", "m", False, "Europe/Helsinki", "global"),
 
-    ("Tokyo", 35.55, 139.784, "e1f10a1e78da46f5b10a1e78da96f525", "m", False, "Asia/Tokyo"),
-    ("Seoul", 37.4943, 126.4905, "e1f10a1e78da46f5b10a1e78da96f525", "m", False, "Asia/Seoul"),
+    ("Tokyo", 35.55, 139.784, "e1f10a1e78da46f5b10a1e78da96f525", "m", False, "Asia/Tokyo", "global"),
+    ("Seoul", 37.4943, 126.4905, "e1f10a1e78da46f5b10a1e78da96f525", "m", False, "Asia/Seoul", "global"),
 ]
 
 # ============================================================
 # MODELES OPEN-METEO
 # ============================================================
 
-MODELS = [
+MODELS_US = [
     ("ECMWF IFS", "ecmwf_ifs"),
     ("ECMWF AIFS", "ecmwf_aifs025_single"),
     ("GFS", "ncep_gfs_seamless"),
     ("HRRR", "ncep_hrrr_conus"),
     ("NBM", "ncep_nbm_conus"),
     ("NAM", "ncep_nam_conus"),
+    ("ICON", "icon_global"),
+    ("GEM", "cmc_gem_gdps"),
+]
+
+
+MODELS_GLOBAL = [
+    ("ECMWF IFS", "ecmwf_ifs"),
+    ("ECMWF AIFS", "ecmwf_aifs025_single"),
+    ("GFS", "ncep_gfs_seamless"),
     ("ICON", "icon_global"),
     ("GEM", "cmc_gem_gdps"),
 ]
@@ -953,6 +962,7 @@ for (
     units,
     source_nws,
     station_timezone,
+    region,
 ) in stations:
 
 
@@ -1014,11 +1024,12 @@ for (
     # OPEN-METEO
     # --------------------------------------------------------
 
-    for (
-        model_name,
-        model_id
-    ) in MODELS:
-
+    if region == "us":
+        models = MODELS_US
+    else:
+        models = MODELS_GLOBAL
+    
+    for model_name, model_id in models:
 
         results = process_openmeteo_model(
 
