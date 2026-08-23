@@ -43,17 +43,17 @@ stations = [
     ("Atlanta", 33.64028, -84.42694, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, "America/New_York", "us"),
     ("San Francisco", 37.61961, -122.36558, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, "America/Los_Angeles", "us"),
 
-    ("Paris", 48.986, 2.449, "e1f10a1e78da46f5b10a1e78da96f525", "m", False, "Europe/Paris", "global"),
-    ("Londres", 51.51, 0.028, "e1f10a1e78da46f5b10a1e78da96f525", "m", False, "Europe/London", "global"),
-    ("Madrid", 40.452, -3.584, "e1f10a1e78da46f5b10a1e78da96f525", "m", False, "Europe/Madrid", "global"),
-    ("Milan", 45.626, 8.696, "e1f10a1e78da46f5b10a1e78da96f525", "m", False, "Europe/Rome", "global"),
-    ("Munich", 48.354, 11.792, "e1f10a1e78da46f5b10a1e78da96f525", "m", False, "Europe/Berlin", "global"),
-    ("Amsterdam", 52.31, 4.765, "e1f10a1e78da46f5b10a1e78da96f525", "m", False, "Europe/Amsterdam", "global"),
-    ("Varsovie", 52.169, 20.979, "e1f10a1e78da46f5b10a1e78da96f525", "m", False, "Europe/Warsaw", "global"),
-    ("Helsinski", 60.317, 24.967, "e1f10a1e78da46f5b10a1e78da96f525", "m", False, "Europe/Helsinki", "global"),
+    ("Paris", 48.96940, 2.44139, "e1f10a1e78da46f5b10a1e78da96f525", "m", False, "Europe/Paris", "global"),
+    ("Londres", 51.50530, 0.05528, "e1f10a1e78da46f5b10a1e78da96f525", "m", False, "Europe/London", "global"),
+    ("Madrid", 40.47193, -3.56264, "e1f10a1e78da46f5b10a1e78da96f525", "m", False, "Europe/Madrid", "global"),
+    ("Milan", 45.63060, 8.72811, "e1f10a1e78da46f5b10a1e78da96f525", "m", False, "Europe/Rome", "global"),
+    ("Munich", 48.35380, 11.78610, "e1f10a1e78da46f5b10a1e78da96f525", "m", False, "Europe/Berlin", "global"),
+    ("Amsterdam", 52.30860, 4.76389, "e1f10a1e78da46f5b10a1e78da96f525", "m", False, "Europe/Amsterdam", "global"),
+    ("Varsovie", 52.16570, 20.96710, "e1f10a1e78da46f5b10a1e78da96f525", "m", False, "Europe/Warsaw", "global"),
+    ("Helsinski", 60.31720, 24.96330, "e1f10a1e78da46f5b10a1e78da96f525", "m", False, "Europe/Helsinki", "global"),
 
-    ("Tokyo", 35.55, 139.784, "e1f10a1e78da46f5b10a1e78da96f525", "m", False, "Asia/Tokyo", "global"),
-    ("Seoul", 37.4943, 126.4905, "e1f10a1e78da46f5b10a1e78da96f525", "m", False, "Asia/Seoul", "global"),
+    ("Tokyo", 35.55230, 139.78000, "e1f10a1e78da46f5b10a1e78da96f525", "m", False, "Asia/Tokyo", "global"),
+    ("Seoul", 37.46910, 126.45100, "e1f10a1e78da46f5b10a1e78da96f525", "m", False, "Asia/Seoul", "global"),
 ]
 
 # ============================================================
