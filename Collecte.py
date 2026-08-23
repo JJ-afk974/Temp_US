@@ -9,17 +9,17 @@ from zoneinfo import ZoneInfo
 # ============================================================
 
 stations = [
-    ("New York", 40.7761, -73.8727, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, ),
-    ("Miami", 25.7954, -80.2901, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, ),
-    ("Austin", 30.162, -97.689, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, ),
-    ("Dallas", 32.846, -96.87, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, ),
-    ("Denver", 39.705, -104.764, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, ),
-    ("Los Angeles", 33.96, -118.4, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, ),
-    ("Chicago", 41.977, -87.905, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, ),
-    ("Houston", 29.634, -95.246, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, ),
-    ("Seattle", 47.441, -122.3, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, ),
-    ("Atlanta", 33.639, -84.405, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, ),
-    ("San Francisco", 37.616, -122.389, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, ),
+    ("New York", 40.761, -73.864, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, "America/New_York"),
+    ("Miami", 25.7954, -80.2901, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, "America/New_York"),
+    ("Austin", 30.162, -97.689, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, "America/Chicago"),
+    ("Dallas", 32.846, -96.87, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, "America/Chicago"),
+    ("Denver", 39.705, -104.764, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, "America/Denver"),
+    ("Los Angeles", 33.96, -118.4, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, "America/Los_Angeles"),
+    ("Chicago", 41.977, -87.905, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, "America/Chicago"),
+    ("Houston", 29.634, -95.246, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, "America/Chicago"),
+    ("Seattle", 47.441, -122.3, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, "America/Los_Angeles"),
+    ("Atlanta", 33.639, -84.405, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, "America/New_York"),
+    ("San Francisco", 37.616, -122.389, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, "America/Los_Angeles"),
 ]
 
 # ============================================================
@@ -110,7 +110,8 @@ def round_temperature(value):
 def fetch_openmeteo(
     lat,
     lon,
-    model_id
+    model_id,
+    station_timezone,
 ):
 
     params = {
@@ -123,7 +124,8 @@ def fetch_openmeteo(
 
         "forecast_days": 3,
 
-        "timezone": "Europe/Paris",
+        # Heure locale de la station
+        "timezone": station_timezone,
 
         "temperature_unit": "fahrenheit",
     }
@@ -134,61 +136,28 @@ def fetch_openmeteo(
         timeout=30,
     )
 
-    # --------------------------------------------------------
-    # ERREUR
-    # --------------------------------------------------------
-
     if response.status_code != 200:
 
         print()
-        print(
-            "ERREUR OPEN-METEO"
-        )
-
-        print(
-            "HTTP :",
-            response.status_code
-        )
-
-        print(
-            "Model :",
-            model_id
-        )
-
-        print(
-            "URL :",
-            response.url
-        )
+        print("ERREUR OPEN-METEO")
+        print("HTTP :", response.status_code)
+        print("Model :", model_id)
+        print("URL :", response.url)
 
         try:
-
-            print(
-                "Réponse :",
-                response.json()
-            )
+            print("Réponse :", response.json())
 
         except Exception:
-
-            print(
-                response.text
-            )
+            print(response.text)
 
         return None
 
-    # --------------------------------------------------------
-    # JSON
-    # --------------------------------------------------------
-
     try:
-
         return response.json()
 
     except Exception as e:
 
-        print(
-            "JSON invalide :",
-            e
-        )
+        print("JSON invalide :", e)
 
         return None
 
@@ -199,21 +168,17 @@ def fetch_openmeteo(
 
 def get_openmeteo_daily(
     data,
-    request_time
+    request_time,
 ):
 
     if not data:
         return None
 
-    hourly = data.get(
-        "hourly"
-    )
+    hourly = data.get("hourly")
 
     if not hourly:
 
-        print(
-            "Pas de bloc hourly."
-        )
+        print("Pas de bloc hourly.")
 
         return None
 
@@ -229,30 +194,25 @@ def get_openmeteo_daily(
 
     if not times:
 
-        print(
-            "Pas de timestamps."
-        )
+        print("Pas de timestamps.")
 
         return None
 
     if not temperatures:
 
-        print(
-            "Pas de températures."
-        )
+        print("Pas de températures.")
 
         return None
 
     # --------------------------------------------------------
-    # Référence
+    # DATE DE REFERENCE
+    #
+    # IMPORTANT :
+    # request_time est en Europe/Paris.
+    # On utilise uniquement sa date.
     # --------------------------------------------------------
 
-    reference = request_time.replace(
-        minute=0,
-        second=0,
-        microsecond=0,
-        tzinfo=None,
-    )
+    request_date = request_time.date()
 
     daily = {
         "J+0": [],
@@ -261,7 +221,10 @@ def get_openmeteo_daily(
     }
 
     # --------------------------------------------------------
-    # Données horaires
+    # DONNEES HORAIRES
+    #
+    # Les timestamps Open-Meteo sont maintenant dans
+    # le fuseau local de la station.
     # --------------------------------------------------------
 
     for time_str, temperature in zip(
@@ -271,10 +234,8 @@ def get_openmeteo_daily(
 
         try:
 
-            forecast_time = (
-                datetime.fromisoformat(
-                    time_str
-                )
+            forecast_time = datetime.fromisoformat(
+                time_str
             )
 
         except ValueError:
@@ -282,31 +243,21 @@ def get_openmeteo_daily(
             continue
 
         # ----------------------------------------------------
-        # H+X
-        # ----------------------------------------------------
-
-        delta_hours = (
-            forecast_time - reference
-        ).total_seconds() / 3600
-
-        lead_hour = int(
-            round(delta_hours)
-        )
-
-        # On ne prend que H+1 -> H+48
-        if not (
-            1 <= lead_hour <= 48
-        ):
-
-            continue
-
-        # ----------------------------------------------------
-        # J+X
+        # COMPARAISON DES DATES
+        #
+        # Même date :
+        #   J+0
+        #
+        # +1 jour :
+        #   J+1
+        #
+        # +2 jours :
+        #   J+2
         # ----------------------------------------------------
 
         day_offset = (
             forecast_time.date()
-            - request_time.date()
+            - request_date
         ).days
 
         if day_offset == 0:
@@ -324,6 +275,10 @@ def get_openmeteo_daily(
         else:
 
             continue
+
+        # ----------------------------------------------------
+        # TEMPERATURE
+        # ----------------------------------------------------
 
         if temperature is not None:
 
@@ -345,6 +300,7 @@ def process_openmeteo_model(
     model_name,
     model_id,
     request_time,
+    station_timezone,
 ):
 
     print()
@@ -352,11 +308,12 @@ def process_openmeteo_model(
         f"--- Open-Meteo / {model_name} ---"
     )
 
-    data = fetch_openmeteo(
-        lat,
-        lon,
-        model_id,
-    )
+  data = fetch_openmeteo(
+    lat,
+    lon,
+    model_id,
+    station_timezone,
+)
 
     if data is None:
 
@@ -821,6 +778,7 @@ for (
     api_key,
     units,
     source_nws,
+    station_timezone,
 ) in stations:
 
     print()
@@ -858,7 +816,8 @@ for (
             model_name,
             model_id,
             request_time,
-        )
+            station_timezone,
+            )
 
         all_results.extend(
             results
