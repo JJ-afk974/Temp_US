@@ -313,7 +313,7 @@ def process_openmeteo_model(
     lon,
     model_id,
     station_timezone,
-)
+    )
 
     if data is None:
 
