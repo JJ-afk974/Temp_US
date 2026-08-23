@@ -99,7 +99,7 @@ def round_temperature(value):
         return None
 
     return int(
-        round(float(value))
+        float(value) + 0.5
     )
 
 
