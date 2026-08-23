@@ -7,6 +7,28 @@ from zoneinfo import ZoneInfo
 # ============================================================
 # STATIONS
 # ============================================================
+#
+# Structure :
+#
+# (
+#     Nom,
+#     latitude,
+#     longitude,
+#     API_KEY_WU,
+#     unités,
+#     source_nws,
+#     fuseau_horaire
+# )
+#
+# unités :
+#     "e" = Fahrenheit / système impérial
+#     "m" = Celsius / système métrique
+#
+# source_nws :
+#     True  = interroger le NWS
+#     False = ne pas interroger le NWS
+#
+# ============================================================
 
 stations = [
     ("New York", 40.77917, -73.88000, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, "America/New_York"),
@@ -20,6 +42,18 @@ stations = [
     ("Seattle", 47.44472, -122.31361, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, "America/Los_Angeles"),
     ("Atlanta", 33.64028, -84.42694, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, "America/New_York"),
     ("San Francisco", 37.61961, -122.36558, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, "America/Los_Angeles"),
+
+    ("Paris", 48.986, 2.449, "e1f10a1e78da46f5b10a1e78da96f525", "m", False, "Europe/Paris"),
+    ("Londres", 51.51, 0.028, "e1f10a1e78da46f5b10a1e78da96f525", "m", False, "Europe/London"),
+    ("Madrid", 40.452, -3.584, "e1f10a1e78da46f5b10a1e78da96f525", "m", False, "Europe/Madrid"),
+    ("Milan", 45.626, 8.696, "e1f10a1e78da46f5b10a1e78da96f525", "m", False, "Europe/Rome"),
+    ("Munich", 48.354, 11.792, "e1f10a1e78da46f5b10a1e78da96f525", "m", False, "Europe/Berlin"),
+    ("Amsterdam", 52.31, 4.765, "e1f10a1e78da46f5b10a1e78da96f525", "m", False, "Europe/Amsterdam"),
+    ("Varsovie", 52.169, 20.979, "e1f10a1e78da46f5b10a1e78da96f525", "m", False, "Europe/Warsaw"),
+    ("Helsinski", 60.317, 24.967, "e1f10a1e78da46f5b10a1e78da96f525", "m", False, "Europe/Helsinki"),
+
+    ("Tokyo", 35.55, 139.784, "e1f10a1e78da46f5b10a1e78da96f525", "m", False, "Asia/Tokyo"),
+    ("Seoul", 37.4943, 126.4905, "e1f10a1e78da46f5b10a1e78da96f525", "m", False, "Asia/Seoul"),
 ]
 
 # ============================================================
@@ -84,9 +118,11 @@ session.headers.update({
 # ============================================================
 
 def now_paris():
+
     return datetime.now(
         PARIS_TZ
     )
+
 
 # ============================================================
 # OPEN-METEO
@@ -97,10 +133,26 @@ def fetch_openmeteo(
     lon,
     model_id,
     station_timezone,
+    units,
 ):
 
+    # --------------------------------------------------------
+    # Conversion des unités Open-Meteo
+    # --------------------------------------------------------
+
+    if units == "m":
+
+        temperature_unit = "celsius"
+
+    else:
+
+        temperature_unit = "fahrenheit"
+
+
     params = {
+
         "latitude": lat,
+
         "longitude": lon,
 
         "hourly": "temperature_2m",
@@ -112,14 +164,17 @@ def fetch_openmeteo(
         # Heure locale de la station
         "timezone": station_timezone,
 
-        "temperature_unit": "fahrenheit",
+        # Celsius ou Fahrenheit
+        "temperature_unit": temperature_unit,
     }
+
 
     response = session.get(
         OPEN_METEO_URL,
         params=params,
         timeout=30,
     )
+
 
     if response.status_code != 200:
 
@@ -130,19 +185,31 @@ def fetch_openmeteo(
         print("URL :", response.url)
 
         try:
-            print("Réponse :", response.json())
+
+            print(
+                "Réponse :",
+                response.json()
+            )
 
         except Exception:
-            print(response.text)
+
+            print(
+                response.text
+            )
 
         return None
 
+
     try:
+
         return response.json()
 
     except Exception as e:
 
-        print("JSON invalide :", e)
+        print(
+            "JSON invalide :",
+            e
+        )
 
         return None
 
@@ -157,93 +224,106 @@ def get_openmeteo_daily(
 ):
 
     if not data:
+
         return None
 
-    hourly = data.get("hourly")
+
+    hourly = data.get(
+        "hourly"
+    )
+
 
     if not hourly:
 
-        print("Pas de bloc hourly.")
+        print(
+            "Pas de bloc hourly."
+        )
 
         return None
+
 
     times = hourly.get(
         "time",
         []
     )
 
+
     temperatures = hourly.get(
         "temperature_2m",
         []
     )
 
+
     if not times:
 
-        print("Pas de timestamps.")
+        print(
+            "Pas de timestamps."
+        )
 
         return None
+
 
     if not temperatures:
 
-        print("Pas de températures.")
+        print(
+            "Pas de températures."
+        )
 
         return None
+
 
     # --------------------------------------------------------
     # DATE DE REFERENCE
     #
     # IMPORTANT :
     # request_time est en Europe/Paris.
-    # On utilise uniquement sa date.
     # --------------------------------------------------------
 
-    request_date = request_time.date()
+    request_date = (
+        request_time.date()
+    )
+
 
     daily = {
+
         "J+0": [],
+
         "J+1": [],
+
         "J+2": [],
     }
 
+
     # --------------------------------------------------------
     # DONNEES HORAIRES
-    #
-    # Les timestamps Open-Meteo sont maintenant dans
-    # le fuseau local de la station.
     # --------------------------------------------------------
 
-    for time_str, temperature in zip(
+    for (
+        time_str,
+        temperature
+    ) in zip(
         times,
         temperatures,
     ):
 
         try:
 
-            forecast_time = datetime.fromisoformat(
-                time_str
+            forecast_time = (
+                datetime.fromisoformat(
+                    time_str
+                )
             )
 
         except ValueError:
 
             continue
 
-        # ----------------------------------------------------
-        # COMPARAISON DES DATES
-        #
-        # Même date :
-        #   J+0
-        #
-        # +1 jour :
-        #   J+1
-        #
-        # +2 jours :
-        #   J+2
-        # ----------------------------------------------------
 
         day_offset = (
             forecast_time.date()
             - request_date
         ).days
+
 
         if day_offset == 0:
 
@@ -261,15 +341,13 @@ def get_openmeteo_daily(
 
             continue
 
-        # ----------------------------------------------------
-        # TEMPERATURE
-        # ----------------------------------------------------
 
         if temperature is not None:
 
             daily[jour].append(
                 temperature
             )
+
 
     return daily
 
@@ -286,19 +364,24 @@ def process_openmeteo_model(
     model_id,
     request_time,
     station_timezone,
+    units,
 ):
 
     print()
+
     print(
         f"--- Open-Meteo / {model_name} ---"
     )
-    
+
+
     data = fetch_openmeteo(
-      lat,
-      lon,
-      model_id,
-      station_timezone,
+        lat,
+        lon,
+        model_id,
+        station_timezone,
+        units,
     )
+
 
     if data is None:
 
@@ -308,22 +391,40 @@ def process_openmeteo_model(
 
         return []
 
+
     daily = get_openmeteo_daily(
         data,
         request_time,
     )
 
+
     if daily is None:
 
         return []
 
+
     results = []
+
 
     request_time_str = (
         request_time.strftime(
             "%Y-%m-%d %H:%M:%S"
         )
     )
+
+
+    # --------------------------------------------------------
+    # Unité d'affichage
+    # --------------------------------------------------------
+
+    if units == "m":
+
+        unit_symbol = "°C"
+
+    else:
+
+        unit_symbol = "°F"
+
 
     for jour in [
         "J+0",
@@ -333,13 +434,19 @@ def process_openmeteo_model(
 
         values = daily[jour]
 
+
         if values:
+
             tmin = min(values)
+
             tmax = max(values)
 
         else:
+
             tmin = None
+
             tmax = None
+
 
         results.append({
 
@@ -356,13 +463,20 @@ def process_openmeteo_model(
             "Tmin": tmin,
 
             "Tmax": tmax,
+
         })
 
+
         print(
+
             f"{jour} : "
-            f"Tmin={tmin}°F | "
-            f"Tmax={tmax}°F"
+
+            f"Tmin={tmin}{unit_symbol} | "
+
+            f"Tmax={tmax}{unit_symbol}"
+
         )
+
 
     return results
 
@@ -384,13 +498,17 @@ def fetch_wu(
         "wx/forecast/hourly/15day"
     )
 
+
     params = {
+
         "apiKey": api_key,
 
         "geocode": (
             f"{lat},{lon}"
         ),
 
+        # "m" = métrique / Celsius
+        # "e" = impérial / Fahrenheit
         "units": units,
 
         "language": "en-US",
@@ -398,53 +516,71 @@ def fetch_wu(
         "format": "json",
     }
 
+
     response = session.get(
         url,
         params=params,
         timeout=30,
     )
 
+
     response.raise_for_status()
 
+
     data = response.json()
+
 
     times = data[
         "validTimeLocal"
     ]
 
+
     temperatures = data[
         "temperature"
     ]
 
+
     daily = {
+
         "J+0": [],
+
         "J+1": [],
+
         "J+2": [],
     }
+
 
     request_date = (
         request_time.date()
     )
 
-    for time_str, temperature in zip(
+
+    for (
+        time_str,
+        temperature
+    ) in zip(
         times,
         temperatures,
     ):
 
         try:
 
-            dt = datetime.fromisoformat(
-                time_str
+            dt = (
+                datetime.fromisoformat(
+                    time_str
+                )
             )
 
         except ValueError:
 
             continue
 
+
         offset = (
             dt.date()
             - request_date
         ).days
+
 
         if offset == 0:
 
@@ -462,14 +598,20 @@ def fetch_wu(
 
             continue
 
+
         if temperature is not None:
 
             daily[jour].append(
                 temperature
             )
 
+
     return daily
 
+
+# ============================================================
+# PROCESS WEATHER UNDERGROUND
+# ============================================================
 
 def process_wu(
     station_name,
@@ -481,11 +623,14 @@ def process_wu(
 ):
 
     print()
+
     print(
         "--- Weather Underground ---"
     )
 
+
     results = []
+
 
     try:
 
@@ -497,11 +642,22 @@ def process_wu(
             request_time,
         )
 
+
         request_time_str = (
             request_time.strftime(
                 "%Y-%m-%d %H:%M:%S"
             )
         )
+
+
+        if units == "m":
+
+            unit_symbol = "°C"
+
+        else:
+
+            unit_symbol = "°F"
+
 
         for jour in [
             "J+0",
@@ -511,13 +667,19 @@ def process_wu(
 
             values = daily[jour]
 
+
             if values:
+
                 tmin = min(values)
+
                 tmax = max(values)
 
             else:
+
                 tmin = None
+
                 tmax = None
+
 
             results.append({
 
@@ -534,13 +696,20 @@ def process_wu(
                 "Tmin": tmin,
 
                 "Tmax": tmax,
+
             })
 
+
             print(
+
                 f"{jour} : "
-                f"Tmin={tmin}°F | "
-                f"Tmax={tmax}°F"
+
+                f"Tmin={tmin}{unit_symbol} | "
+
+                f"Tmax={tmax}{unit_symbol}"
+
             )
+
 
     except Exception as e:
 
@@ -548,6 +717,7 @@ def process_wu(
             "ERREUR WU :",
             e
         )
+
 
     return results
 
@@ -567,13 +737,16 @@ def fetch_nws(
         f"points/{lat},{lon}"
     )
 
+
     response = requests.get(
         points_url,
         headers=NWS_HEADERS,
         timeout=30,
     )
 
+
     response.raise_for_status()
+
 
     forecast_url = (
         response.json()
@@ -581,13 +754,16 @@ def fetch_nws(
         ["forecastHourly"]
     )
 
+
     response = requests.get(
         forecast_url,
         headers=NWS_HEADERS,
         timeout=30,
     )
 
+
     response.raise_for_status()
+
 
     periods = (
         response.json()
@@ -595,15 +771,21 @@ def fetch_nws(
         ["periods"]
     )
 
+
     daily = {
+
         "J+0": [],
+
         "J+1": [],
+
         "J+2": [],
     }
+
 
     request_date = (
         request_time.date()
     )
+
 
     for period in periods:
 
@@ -617,10 +799,12 @@ def fetch_nws(
 
             continue
 
+
         offset = (
             dt.date()
             - request_date
         ).days
+
 
         if offset == 0:
 
@@ -638,9 +822,11 @@ def fetch_nws(
 
             continue
 
+
         temperature = period.get(
             "temperature"
         )
+
 
         if temperature is not None:
 
@@ -648,8 +834,13 @@ def fetch_nws(
                 temperature
             )
 
+
     return daily
 
+
+# ============================================================
+# PROCESS NWS
+# ============================================================
 
 def process_nws(
     station_name,
@@ -659,11 +850,14 @@ def process_nws(
 ):
 
     print()
+
     print(
         "--- NWS ---"
     )
 
+
     results = []
+
 
     try:
 
@@ -673,11 +867,13 @@ def process_nws(
             request_time,
         )
 
+
         request_time_str = (
             request_time.strftime(
                 "%Y-%m-%d %H:%M:%S"
             )
         )
+
 
         for jour in [
             "J+0",
@@ -687,13 +883,19 @@ def process_nws(
 
             values = daily[jour]
 
+
             if values:
-               tmin = min(values)
-               tmax = max(values)
+
+                tmin = min(values)
+
+                tmax = max(values)
 
             else:
+
                 tmin = None
+
                 tmax = None
+
 
             results.append({
 
@@ -710,13 +912,20 @@ def process_nws(
                 "Tmin": tmin,
 
                 "Tmax": tmax,
+
             })
 
+
             print(
+
                 f"{jour} : "
+
                 f"Tmin={tmin}°F | "
+
                 f"Tmax={tmax}°F"
+
             )
+
 
     except Exception as e:
 
@@ -724,6 +933,7 @@ def process_nws(
             "ERREUR NWS :",
             e
         )
+
 
     return results
 
@@ -745,6 +955,7 @@ for (
     station_timezone,
 ) in stations:
 
+
     print()
     print()
     print("#" * 70)
@@ -755,10 +966,16 @@ for (
 
     print("#" * 70)
 
-    # Une seule RequestTime pour toutes
-    # les sources de cette station.
+
+    # --------------------------------------------------------
+    # Une seule RequestTime pour toutes les sources
+    # de cette station.
+    #
+    # Elle reste en Europe/Paris comme dans ton code initial.
+    # --------------------------------------------------------
 
     request_time = now_paris()
+
 
     print(
         "RequestTime :",
@@ -767,55 +984,114 @@ for (
         )
     )
 
+
+    # --------------------------------------------------------
+    # UNITE
+    # --------------------------------------------------------
+
+    if units == "m":
+
+        unit_symbol = "°C"
+
+    else:
+
+        unit_symbol = "°F"
+
+
+    print(
+        "Unité :",
+        unit_symbol
+    )
+
+
+    print(
+        "Fuseau :",
+        station_timezone
+    )
+
+
     # --------------------------------------------------------
     # OPEN-METEO
     # --------------------------------------------------------
 
-    for model_name, model_id in MODELS:
+    for (
+        model_name,
+        model_id
+    ) in MODELS:
+
 
         results = process_openmeteo_model(
+
             station_name,
+
             lat,
+
             lon,
+
             model_name,
+
             model_id,
+
             request_time,
+
             station_timezone,
-            )
+
+            units,
+
+        )
+
 
         all_results.extend(
             results
         )
 
+
     # --------------------------------------------------------
-    # WU
+    # WEATHER UNDERGROUND
     # --------------------------------------------------------
 
     results = process_wu(
+
         station_name,
+
         lat,
+
         lon,
+
         api_key,
+
         units,
+
         request_time,
+
     )
+
 
     all_results.extend(
         results
     )
 
+
     # --------------------------------------------------------
     # NWS
+    #
+    # Seulement pour les stations américaines.
     # --------------------------------------------------------
 
     if source_nws:
 
         results = process_nws(
+
             station_name,
+
             lat,
+
             lon,
+
             request_time,
+
         )
+
 
         all_results.extend(
             results
@@ -823,55 +1099,89 @@ for (
 
 
 # ============================================================
-# EXPORT — AJOUT AU CSV SANS ECRASER LES DONNEES PRECEDENTES
+# EXPORT — AJOUT AU CSV SANS ECRASER
 # ============================================================
 
 FIELDNAMES = [
+
     "Station",
+
     "Model",
+
     "RequestTime",
+
     "Jour",
+
     "Tmin",
+
     "Tmax",
 ]
 
 
 # ------------------------------------------------------------
-# Vérifie si le fichier existe déjà et s'il contient des données
+# Vérifie si le fichier existe déjà
 # ------------------------------------------------------------
 
 try:
+
     file_exists = (
-        os.path.exists(CSV_FILE)
-        and os.path.getsize(CSV_FILE) > 0
+
+        os.path.exists(
+            CSV_FILE
+        )
+
+        and
+
+        os.path.getsize(
+            CSV_FILE
+        ) > 0
+
     )
 
 except Exception:
+
     file_exists = False
 
 
 # ------------------------------------------------------------
-# Ouverture en mode "a" = append
+# Ouverture en mode append
 # ------------------------------------------------------------
 
 with open(
+
     CSV_FILE,
+
     "a",
+
     newline="",
+
     encoding="utf-8",
+
 ) as file:
 
+
     writer = csv.DictWriter(
+
         file,
+
         fieldnames=FIELDNAMES,
+
     )
 
-    # Écrit l'en-tête uniquement si le fichier est nouveau
+
+    # --------------------------------------------------------
+    # En-tête uniquement si fichier nouveau
+    # --------------------------------------------------------
+
     if not file_exists:
 
         writer.writeheader()
 
-    # Ajoute les nouvelles données à la suite
+
+    # --------------------------------------------------------
+    # Ajout des données
+    # --------------------------------------------------------
+
     writer.writerows(
         all_results
     )
