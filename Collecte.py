@@ -88,21 +88,6 @@ def now_paris():
         PARIS_TZ
     )
 
-
-# ============================================================
-# ARRONDI TEMPERATURE
-# ============================================================
-
-def round_temperature(value):
-
-    if value is None:
-        return None
-
-    return int(
-        float(value) + 0.5
-    )
-
-
 # ============================================================
 # OPEN-METEO
 # ============================================================
@@ -349,17 +334,10 @@ def process_openmeteo_model(
         values = daily[jour]
 
         if values:
-
-            tmin = round_temperature(
-                min(values)
-            )
-
-            tmax = round_temperature(
-                max(values)
-            )
+            tmin = min(values)
+            tmax = max(values)
 
         else:
-
             tmin = None
             tmax = None
 
@@ -534,17 +512,10 @@ def process_wu(
             values = daily[jour]
 
             if values:
-
-                tmin = round_temperature(
-                    min(values)
-                )
-
-                tmax = round_temperature(
-                    max(values)
-                )
+                tmin = min(values)
+                tmax = max(values)
 
             else:
-
                 tmin = None
                 tmax = None
 
@@ -717,17 +688,10 @@ def process_nws(
             values = daily[jour]
 
             if values:
-
-                tmin = round_temperature(
-                    min(values)
-                )
-
-                tmax = round_temperature(
-                    max(values)
-                )
+               tmin = min(values)
+               tmax = max(values)
 
             else:
-
                 tmin = None
                 tmax = None
 
