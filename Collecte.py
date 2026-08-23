@@ -10,16 +10,16 @@ from zoneinfo import ZoneInfo
 
 stations = [
     ("New York", 40.77917, -73.88000, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, "America/New_York"),
-    ("Miami", 25.7954, -80.2901, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, "America/New_York"),
-    ("Austin", 30.162, -97.689, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, "America/Chicago"),
-    ("Dallas", 32.846, -96.87, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, "America/Chicago"),
-    ("Denver", 39.705, -104.764, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, "America/Denver"),
-    ("Los Angeles", 33.96, -118.4, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, "America/Los_Angeles"),
-    ("Chicago", 41.977, -87.905, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, "America/Chicago"),
-    ("Houston", 29.634, -95.246, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, "America/Chicago"),
-    ("Seattle", 47.441, -122.3, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, "America/Los_Angeles"),
-    ("Atlanta", 33.639, -84.405, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, "America/New_York"),
-    ("San Francisco", 37.616, -122.389, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, "America/Los_Angeles"),
+    ("Miami", 25.79056, -80.31639, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, "America/New_York"),
+    ("Austin", 30.18304, -97.67987, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, "America/Chicago"),
+    ("Dallas", 32.85416, -96.85506, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, "America/Chicago"),
+    ("Denver", 39.71331, -104.75806, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, "America/Denver"),
+    ("Los Angeles", 33.93806, -118.38889, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, "America/Los_Angeles"),
+    ("Chicago", 41.97972, -87.90444, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, "America/Chicago"),
+    ("Houston", 29.63750, -95.28250, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, "America/Chicago"),
+    ("Seattle", 47.44472, -122.31361, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, "America/Los_Angeles"),
+    ("Atlanta", 33.64028, -84.42694, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, "America/New_York"),
+    ("San Francisco", 37.61961, -122.36558, "e1f10a1e78da46f5b10a1e78da96f525", "e", True, "America/Los_Angeles"),
 ]
 
 # ============================================================
